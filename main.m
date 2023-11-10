@@ -4,7 +4,7 @@ addpath D:\Facultate\Licenta\fieldtrip-20231015\fieldtrip-20231015
 ft_defaults
 
 % definirea directorului de baza
-baseDir = 'F:\';
+baseDir = 'D:\Facultate\Licenta\meg data test';
 
 % se listeaza toatea subdirectoarele (sub-xxxx)
 subjectDirs = dir(fullfile(baseDir, 'sub-*'));
@@ -51,12 +51,24 @@ for subjectIdx = 1:length(subjectDirs) % bucla pentru toate directoarele cu subi
                     % printeaza in consola faptul ca se proceseaza datele MEG
                     fprintf('Processing rest MEG data file: %s\n', restMegFilePath);
                     
-                    % se importa datele
+                    channel_types_to_keep = {'meggrad', 'magnetometer'};
+                    desired_num_trials = 30;
+
+                    % se importa datele in continuu
                     cfg = [];
                     cfg.dataset = restMegFilePath;
+                    cfg.continuous = 'no';
                     data_meg = ft_preprocessing(cfg);
-                   
+
                     % ferastruire
+                    % if numel(data_meg.trial) == 300
+                    %     asd
+                    % end
+                    cfgdwn.resamplefs = 1000;
+                    cfgdwn.channel = ft_channelselection(channel_types_to_keep, data_meg.label);
+                    data_meg = ft_selectdata(cfgdwn, data_meg);
+                    data_meg = ft_resampledata(cfgdwn,data_meg);
+                    
 
                     % se adauga datele meg la fiecare sesiune a fiecarui subiect
                     subjectData.(subjectName).(sessionName){megIdx} = data_meg;
