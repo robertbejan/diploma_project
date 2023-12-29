@@ -1,4 +1,4 @@
-function data_meg = trialPreprocessing(data_meg,valStart,fq)
+function data_meg = trialPreprocessing(data_meg, fq) %valStart)
 
 % close all;
 
@@ -36,7 +36,7 @@ for i=1:numel(data_meg.trial)
     % figure;
     % plot(data_meg.trial{1,i}');
 
-    Y = fft(data_meg.trial{1,i}');  % X = semnalul dintr-un cadru
+    % Y = fft(data_meg.trial{1,i}');  % X = semnalul dintr-un cadru
     % P2 = abs(Y/L);
     % P1 = P2(1:L/2+1);
 
@@ -49,15 +49,17 @@ for i=1:numel(data_meg.trial)
     % Yr=Y(:,j); Yr(valStart+1:end-valStart)=0; 
     % Zr=real(ifft(Yr));  %!!!!  Z=real(ifft(Y(1:K)));
     %compar Zr cu X=data_meg.trial{1,i}(j,:)';
-    
-    numberOfTimeStamps = size(data_meg.trial{1,1});
-    numberOfTimeStamps = numberOfTimeStamps(1,2);
-    Zr = zeros(numel(data_meg.label), numberOfTimeStamps);
+    % 
+    % numberOfTimeStamps = size(data_meg.trial{1,1});
+    % numberOfTimeStamps = numberOfTimeStamps(1,2);
+    % Zr = zeros(numel(data_meg.label), numberOfTimeStamps);
 
     for k = 1:30
-        Y = fft(data_meg.trial{1,k}'); 
         for j=1:numel(data_meg.label) %electrod
+            Y = fft(data.trial{1,k}(j,:)');
+            aux = abs(Y(2:valStart));
             Yr=Y(:,j);
+            Yr(valStart+1:end-valStart) = 0;
             Yr(valStart+1:end-valStart) = 0;
             Zr(j,:)=real(ifft(Yr))';  %!!!!  Z=real(ifft(Y(1:K)));
         end

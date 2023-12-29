@@ -5,7 +5,7 @@ addpath D:\Facultate\Licenta\fieldtrip-20231015\fieldtrip-20231015
 ft_defaults
 
 % definirea directorului de baza
-baseDir = 'D:\Facultate\Licenta\meg data test';
+baseDir = 'F:\';
 
 % se listeaza toatea subdirectoarele (sub-xxxx)
 subjectDirs = dir(fullfile(baseDir, 'sub-*'));
@@ -78,13 +78,14 @@ for subjectIdx = 1:length(subjectDirs) % bucla pentru toate directoarele cu subi
                         data_meg.trial{1,i} = data_meg.trial{1,i}*10^12;
                     end
 
-                    % Se scade numarul de canale
-                    numMinCanale = 240;
+                    % Se scade numarul de canale 
+                    numMinCanale = 250;
                     data_meg = trialChannelSelection(data_meg, numMinCanale);
+                    % (DE MUTAT IN SCRIPT-UL VIITOR PENTRU PROGRAMUL PRINCIPAL)
 
                     % Se aplica preprocesarea
                     valStart = 50;
-                    data_meg = trialPreprocessing(data_meg,valStart,cfgdwn.resamplefs);
+                    data_meg = trialPreprocessing(data_meg,cfgdwn.resamplefs);%valStart -> argument in plus
 
                     % se adauga datele meg la fiecare sesiune a fiecarui subiect
                     subjectData.(subjectName).(sessionName){megIdx} = data_meg;
