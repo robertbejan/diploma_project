@@ -1,15 +1,17 @@
 addpath 'D:\Facultate\Licenta\licenta_git\diploma_project'
 
-sizeOfFeatFFT = 1000;
+sizeOfFeatFFTTraining = 1000;
+sizeOfFeatFFTTest = 1000;
 valStart = 50;
 numOfSensors = 250;
 
-[featFFT, infoFeatFFT, target_class_training] = trainingMatrix(sizeOfFeatFFT,valStart, numOfSensors);
-[featmatTest, infoFeatTest] = trainingMatrix(sizeOfFeatFFT, valStart, numOfSensors);
+[featFFT, infoFeatFFT, target_class_training] = trainingMatrix(sizeOfFeatFFTTraining,valStart, numOfSensors);
+[featmatTest, infoFeatTest] = trainingMatrix(sizeOfFeatFFTTest, valStart, numOfSensors);
 
 [featFFT,featmatTest,infoFeatFFT,infoFeatTest] = featCorrections(featFFT,featmatTest,infoFeatFFT,infoFeatTest);
 
-noTrees = 150;
+%% 
+noTrees = 250;
 
 % Construirea modelului de invatare automata utilizând caracteristicile extrase din 
 % semnalele sau datele din setul de antrenare (featFFT) și etichetele
@@ -17,29 +19,29 @@ noTrees = 150;
 modelC=fitensemble(featFFT,target_class_training,'Bag', noTrees,'Tree','type','classification');
 
 % Predictiile modelului cu datele de antrenare
-y_model_train = predict(modelC,featFFT);
+[y_model_train, score_train] = predict(modelC,featFFT);
 
 % Predictiile modelului cu datele de antrenare
-y_model_test = predict(modelC,featmatTest);
+[y_model_test, score_test] = predict(modelC,featmatTest);
 
 % salvare
-directoryPath = 'F:\Training Saves'; 
-cd(directoryPath);
-currentDateTime = datestr(now, 'yyyy-mm-dd_HH-MM');
-folderName = ['Workspace_', currentDateTime, '_', num2str(sizeOfFeatFFT)];
+% directoryPath = 'F:\Training Saves'; 
+% cd(directoryPath);
+% currentDateTime = datestr(now, 'yyyy-mm-dd_HH-MM');
+% folderName = ['Workspace_', currentDateTime, '_', num2str(sizeOfFeatFFTTraining)];
 
 % Create the directory if it doesn't exist
-if ~exist(folderName, 'dir')
-    mkdir(folderName);
-end
+% if ~exist(folderName, 'dir')
+%     mkdir(folderName);
+% end
 
-save(fullfile(folderName, 'workspace_variables.mat'));
+% save(fullfile(folderName, 'workspace_variables.mat'));
 
 beep on; beep;
 
-plot(y_model_train, 'r');
-hold on;
-plot(target_class_training, 'b');
+% plot(y_model_train, 'r');
+% hold on;
+% plot(target_class_training, 'b');
 
 target_class_trainingTest = categorical([infoFeatTest.class]);
 
@@ -59,3 +61,11 @@ disp(conf_matrix_train);
 conf_matrix_test = confusionmat(true_labels_test, y_model_test);
 disp('Confusion Matrix (Test Data):');
 disp(conf_matrix_test);
+
+[idxFeat,ScoreFeat] = fscmrmr(featFFT,target_class_training);
+%relieff
+ bar(scores(idx))
+xlabel('Predictor rank')
+ ylabel('Predictor importance score')
+aux = fix(idxFeat(1:N)/(valStart-1))+1;
+unique(aux)

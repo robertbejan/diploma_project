@@ -39,12 +39,12 @@ else
         % For example, you can open it using the 'cd' command:
         cd(fullPath);
 
-        if exist(fullfile(fullPath, 'subjectData.mat'), 'file') == 2
+        if exist(fullfile(fullPath, 'subjectData_260.mat'), 'file') == 2
             % Load the subjectData.mat file
-            loadedData = load(fullfile(fullPath, 'subjectData.mat'));
+            loadedData = load(fullfile(fullPath, 'subjectData_260.mat'));
 
             % Display information or perform operations with the loaded data
-            disp('Loaded subjectData.mat file');
+            disp('Loaded subjectData_260.mat file');
             % Access the loaded variables as needed (e.g., loadedData.variableName)
         else
             disp('subjectData.mat file not found in the selected directory.');
@@ -115,8 +115,10 @@ else
         else
             infoFeatFFT(i).class = 1;
         end
-
+        disp('iteration: ');
+        disp(i);
     end
 end
 target_class_training = categorical([infoFeatFFT.class]);
 end
+

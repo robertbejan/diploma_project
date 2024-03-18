@@ -6,6 +6,7 @@ ft_defaults
 
 % definirea directorului de baza
 baseDir = 'F:\';
+% baseDir = 'F:\To load';
 
 % se listeaza toatea subdirectoarele (sub-xxxx)
 subjectDirs = dir(fullfile(baseDir, 'sub-*'));
@@ -78,13 +79,14 @@ for subjectIdx = 1:length(subjectDirs) % bucla pentru toate directoarele cu subi
                         data_meg.trial{1,i} = data_meg.trial{1,i}*10^12;
                     end
 
-                    % Se scade numarul de canale 
-                    numMinCanale = 250;
-                    data_meg = trialChannelSelection(data_meg, numMinCanale);
+                    % Se scade numarul de canale - COMENTEAZA DACA DORESTI
+                    % TOTI SENZORII ----> currently nu doresc
+
+                    % numMinCanale = 250;
+                    % data_meg = trialChannelSelection(data_meg, numMinCanale);
                     % (DE MUTAT IN SCRIPT-UL VIITOR PENTRU PROGRAMUL PRINCIPAL)
 
                     % Se aplica preprocesarea
-                    valStart = 50;
                     data_meg = trialPreprocessing(data_meg,cfgdwn.resamplefs);%valStart -> argument in plus
 
                     % se adauga datele meg la fiecare sesiune a fiecarui subiect
@@ -98,9 +100,10 @@ for subjectIdx = 1:length(subjectDirs) % bucla pentru toate directoarele cu subi
             end
         end
     end
-    save(fullfile(baseDir, subjectDir, 'subjectData.mat'), 'subjectData');
+    save(fullfile(baseDir, subjectDir, 'subjectData_full.mat'), 'subjectData');
     fprintf('datele au fost salvate');
 
     close all;
     
 end
+beep on; beep;
