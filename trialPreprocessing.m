@@ -1,4 +1,4 @@
-function data_meg = trialPreprocessing(data_meg, fq) %valStart)
+function data_meg = trialPreprocessing(data_meg, fq)%, valStart)
 
 % close all;
 
@@ -54,22 +54,22 @@ for i=1:numel(data_meg.trial)
     % numberOfTimeStamps = numberOfTimeStamps(1,2);
     % Zr = zeros(numel(data_meg.label), numberOfTimeStamps);
 
-    for k = 1:30
-        for j=1:numel(data_meg.label) %electrod
-            Y = fft(data.trial{1,k}(j,:)');
-            aux = abs(Y(2:valStart));
-            Yr=Y(:,j);
-            Yr(valStart+1:end-valStart) = 0;
-            Yr(valStart+1:end-valStart) = 0;
-            Zr(j,:)=real(ifft(Yr))';  %!!!!  Z=real(ifft(Y(1:K)));
-        end
-        data_meg.trial{1,k} = Zr;
-    end
-
-    % %compar Zr cu X=data_meg.trial{1,i}(j,:)';
+    % for k = 1:30
+    %     for j=1:numel(data_meg.label) %electrod
+    %         Y = fft(data_meg.trial{1,k}(j,:)');
+    %         aux = abs(Y(2:valStart));
+    %         Yr=Y(:,j);
+    %         Yr(valStart+1:end-valStart) = 0;
+    %         Yr(valStart+1:end-valStart) = 0;
+    %         Zr(j,:)=real(ifft(Yr))';  %!!!!  Z=real(ifft(Y(1:K)));
+    %     end
+    %     data_meg.trial{1,k} = Zr;
+    % end
+    % 
+    % % %compar Zr cu X=data_meg.trial{1,i}(j,:)';
     % featFFT = real(Yr(2:valStart,:));
     % featFFT = featFFT(:)';
-    
+    % 
     % featFFT = Y (2:valStart,:);
     % featFFT = featFFT(:)';
     
