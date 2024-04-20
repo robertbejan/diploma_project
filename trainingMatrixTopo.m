@@ -1,4 +1,4 @@
-function [featFFT, infoFeatFFT, target_class_training, pozitiiSenzori] = trainingMatrixTopo(sizeOfFeatFFT,valStart)
+function [featFFT, infoFeatFFT, target_class_training, pozitiiSenzori] = trainingMatrixTopo(sizeOfFeatFFT,valStart,lista)
 
 % Specify the path to the directory you want to explore
 directoryPath = 'F:\';
@@ -10,6 +10,8 @@ dirInfo = dir(directoryPath);
 directories = dirInfo([dirInfo.isdir]);
 directories = directories(~ismember({directories.name}, {'.', '..'}));
 directories = directories(6:end);
+
+sizeOfFeatFFT = numel(lista);
 
 % Get the number of directories
 numDirectories = numel(directories);
@@ -25,11 +27,13 @@ else
     for i=1:sizeOfFeatFFT
 
         % Generate a random index within the range of directories
-        randomIndex = randi(numDirectories);
+        % randomIndex = randi(numDirectories);
+        % 
+        % % Get the name of the randomly selected directory
+        % randomDirectoryName = directories(randomIndex).name;
 
-        % Get the name of the randomly selected directory
-        randomDirectoryName = directories(randomIndex).name;
-
+        randomDirectoryName = lista{1,i};
+        
         % Construct the full path of the randomly selected directory
         fullPath = fullfile(directoryPath, randomDirectoryName);
 

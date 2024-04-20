@@ -1,17 +1,44 @@
+addpath D:\Facultate\Licenta\licenta_git\diploma_project
+
 % Generare imagini
 tic
-sizeOfFeatFFT = 600;
+sizeOfFeatFFT = 1000;
 valStart = 50;
 
-[featFFT, infoFeatFFT, target_class_training, sensorPositions] = trainingMatrixTopo(sizeOfFeatFFT,valStart);
+cd('F:\Training Saves\Workspace_2024-01-13_17-18_1000')
+load("workspace_variables.mat");
+infoRandomForest = infoFeatTest;
+list = cell(1,numel(infoFeatTest));
+for i=1:numel(infoFeatTest)
+    disp(i);
+    lista{i} = infoFeatTest(i).subject;
+    lista{i} = strrep(lista{i},'sub_','SUB-');
+end
+
+[featFFT, infoFeatFFT, target_class_training, sensorPositions] = trainingMatrixTopo(sizeOfFeatFFT,valStart,lista);
 
 % Imaginea pentru iteratia I – as putea sa fac fft direct aici
 
 currentDateTime = datestr(now, 'yyyy-mm-dd_HH-MM');
 folderName = ['Workspace_Topo_', currentDateTime, '_', num2str(sizeOfFeatFFT)];
 directoryPath = 'F:\Training Saves';
+cd(directoryPath);
+if ~exist(folderName, 'dir')
+    mkdir(folderName);
+end
 
-for i=1:sizeOfFeatFFT
+cd(folderName);
+save('featFFT', 'featFFT');
+
+save('infoFeatFFT', 'infoFeatFFT');
+save('target_class_training', 'target_class_training');
+save('sensorPositions', 'sensorPositions');
+
+sizeOfFeatFFT = numel(featFFT);
+
+i=0;
+while i<=sizeOfFeatFFT
+    i = i + 1;
     disp('for iteration: ')
     disp(num2str(i));
     images = [];
@@ -28,9 +55,10 @@ for i=1:sizeOfFeatFFT
     sizexq = size(xq); sizeyq = size(yq);
     if sizexq(1) == 301 && sizeyq(1) == 301
         for p = 1:valStart-1
-            %startIndex = (k - 1) * numOfSensors + 1;
+            % startIndex = (k - 1) * numOfSensors + 1;
             % endIndex = k * numOfSensors;
             aux = griddata(x, y, currentValues(p:(valStart-1):end), xq, yq, 'nearest');
+            % aux2 = griddata(x, y, currentValues(p:(valStart-1):end), xq, yq, 'natural');
             vec=isnan(aux);
             aux(vec)=0;
             vec=(aux<0);
@@ -57,45 +85,24 @@ for i=1:sizeOfFeatFFT
         cd(dataFolder);
         varName = ['image', num2str(i)]; % Construct unique variable name
         save([varName, '.mat'], 'images'); % Save each image in a separate MAT fill
+    else
+        infoFeatFFT(i) = [];
+        target_class_training(i) = [];
+        sensorPositions(i) = [];
+        featFFT(i) = [];
+        i = i-1;
+        sizeOfFeatFFT = sizeOfFeatFFT - 1;
+        disp('error found');
     end
-    save('infoFeatFFT', 'infoFeatFFT');
-    save('target_class_training', 'target_class_training');
 end
+
+cd(directoryPath);
+cd(folderName);
+save('featFFTnew', 'featFFT');
+save('infoFeatFFT', 'infoFeatFFT');
+save('target_class_training', 'target_class_training');
+save('sensorPositions', 'sensorPositions');
 
 toc
 
-% figure;
-% imagesc(x, y, images{1, 1}(:,:,42), [0, 255]);
-% colorbar;
-% pause(2);
-
-% salvare
-% directoryPath = 'F:\Training Saves';
-% cd(directoryPath);
-% currentDateTime = datestr(now, 'yyyy-mm-dd_HH-MM');
-% folderName = ['Workspace_Topo_', currentDateTime, '_', num2str(sizeOfFeatFFT)];
-%
-% % Create the directory if it doesn't exist
-% if ~exist(folderName, 'dir')
-%     mkdir(folderName);
-% end
-%
-% cd(folderName);
-% save('infoFeatFFT', 'infoFeatFFT');
-% save('target_class_training', 'target_class_training');
-%
-% % Create subdirectory for data
-% dataFolder = 'data';
-% if ~exist(dataFolder, 'dir')
-%     mkdir(dataFolder);
-% end
-%
-% cd(dataFolder);
-% image = {};
-%
-% for i = 1:numel(images) % Iterate over each image
-%     image = images{i};
-%     varName = ['image', num2str(i)]; % Construct unique variable name
-%     save([varName, '.mat'], 'image'); % Save each image in a separate MAT file
-% end
-
+% cnnMain.m

@@ -1,0 +1,31 @@
+function [dsTrainIm, target_class_training, vector, scrapped] = dataFixFun(dsTrainIm, target_class_training, threshold, pathToData, sortedFileNames)
+N = numel(dsTrainIm.Files);
+scrapped = 0;
+indx = 0;
+vector = zeros(1,N);
+cd(pathToData);
+array = cell2mat(sortedFileNames{indx} = [];
+while indx <= N
+    aux = 0;
+    indx = indx + 1;
+    disp("iteration"); disp(indx);
+    %im = read(dsTrainIm);
+    im = load(sortedFileNames{indx});
+    im = im.images;
+    med = [];
+    for p=1:size(im,3)
+        med(p) = mean(im(:,:,p), "all");
+    end
+    aux = mean(med);
+    vector(indx) = aux;
+    if abs(aux) > threshold
+        dsTrainIm.Files(indx) = [];
+        sortedFileNames{indx} = [];
+        target_class_training(indx) = [];
+        scrapped = scrapped + 1;
+        indx = indx - 1;
+        N = N - 1;
+    end
+end
+
+end
